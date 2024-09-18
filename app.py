@@ -2,7 +2,6 @@
 
 import aws_cdk as cdk
 
-
 from work.ck_stack import MyDemoStack
 app = cdk.App()
 

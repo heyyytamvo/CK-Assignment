@@ -3,11 +3,14 @@ from aws_cdk import (
     aws_s3 as s3,
     aws_bedrock as bedrock,
     aws_opensearchserverless as opensearchserverless,
-    aws_iam as iam
+    aws_iam as iam,
+    aws_secretsmanager as secretsmanager,
+    SecretValue
 )
 from constructs import Construct
 
 import hashlib
+import os
 
 class MyDemoStack(Stack):
 
@@ -21,32 +24,12 @@ class MyDemoStack(Stack):
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
         )
         
-        
-        # Create Opensearch Serverless Collection
-        self.cfn_collection = opensearchserverless.CfnCollection(
-            self,
-            "ChatBotAgentCollection",
-            name="ck-demo-collection",
-            description="ChatBot Collection",
-            type="VECTORSEARCH",
+        self.secret = secretsmanager.Secret(self, "Secret",
+            secret_object_value={
+                "apiKey": SecretValue.unsafe_plain_text(os.getenv('apikey'))
+            }
         )
-        
-        opensearch_serverless_encryption_policy = opensearchserverless.CfnSecurityPolicy(self, "OpenSearchServerlessEncryptionPolicy",
-            name="encryption-policy",
-            policy="{\"Rules\":[{\"ResourceType\":\"collection\",\"Resource\":[\"collection/*\"]}],\"AWSOwnedKey\":true}",
-            type="encryption",
-            description="the encryption policy for the opensearch serverless collection"
-        )
-        
-        opensearch_serverless_network_policy = opensearchserverless.CfnSecurityPolicy(self, "OpenSearchServerlessNetworkPolicy",
-            name="network-policy",
-            policy="[{\"Description\":\"Public access for collection\",\"Rules\":[{\"ResourceType\":\"dashboard\",\"Resource\":[\"collection/*\"]},{\"ResourceType\":\"collection\",\"Resource\":[\"collection/*\"]}],\"AllowFromPublic\":true}]",
-            type="network",
-            description="the network policy for the opensearch serverless collection"
-        )
-        
-        self.cfn_collection.add_dependency(opensearch_serverless_encryption_policy)
-        self.cfn_collection.add_dependency(opensearch_serverless_network_policy)
+
         
         # Create a bedrock knowledgebase role.
         bedrock_kb_role = iam.Role(self, 'bedrock-kb-role',
@@ -71,6 +54,7 @@ class MyDemoStack(Stack):
                     "iam:PassRole", 
                     "iam:ListUsers",
                     "iam:ListRoles", 
+                    "secretsmanager:GetSecretValue"
                     ],
                 resources=["*"],
             )
@@ -99,20 +83,20 @@ class MyDemoStack(Stack):
             ),
             ## StorageConfiguration required
             storage_configuration=bedrock.CfnKnowledgeBase.StorageConfigurationProperty(
-                type="OPENSEARCH_SERVERLESS",
+                type="PINECONE",
                 
-                opensearch_serverless_configuration = bedrock.CfnKnowledgeBase.OpenSearchServerlessConfigurationProperty(
-                    collection_arn=self.cfn_collection.attr_arn,
-                    field_mapping=bedrock.CfnKnowledgeBase.OpenSearchServerlessFieldMappingProperty(
-                        metadata_field="AMAZON_BEDROCK_METADATA",
-                        text_field="AMAZON_BEDROCK_TEXT_CHUNK",
-                        # To Do !!
-                        vector_field="bedrock-knowledge-base-default-vector"
+                pinecone_configuration=bedrock.CfnKnowledgeBase.PineconeConfigurationProperty(
+                    connection_string="https://test-pn0ffam.svc.aped-4627-b74a.pinecone.io",
+                    credentials_secret_arn=self.secret.secret_arn,
+                    field_mapping=bedrock.CfnKnowledgeBase.PineconeFieldMappingProperty(
+                        metadata_field="metadataField",
+                        text_field="textField"
                     ),
-                    # To Do !!
-                    vector_index_name="bedrock-knowledgebase-index"
+
+                    # the properties below are optional
+                    namespace="CK"
+                    ),
                 )
-            )
         )
         
         # create KB datasource
