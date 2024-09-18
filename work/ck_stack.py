@@ -1,7 +1,5 @@
 from aws_cdk import (
-    # Duration,
     Stack,
-    # aws_sqs as sqs,
     aws_s3 as s3,
     aws_bedrock as bedrock,
     aws_opensearchserverless as opensearchserverless,
@@ -9,15 +7,13 @@ from aws_cdk import (
 )
 from constructs import Construct
 
-
-import string
 import hashlib
 
 class MyDemoStack(Stack):
 
     def __init__(self, scope: Construct, construct_id: str,**kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
-
+        EMBEDDING_MODEL_ARN="arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:0"
         # Create an S3 bucket
         self.bucket = s3.Bucket(self, 
             "ck-demo-s3",
@@ -48,7 +44,6 @@ class MyDemoStack(Stack):
             type="network",
             description="the network policy for the opensearch serverless collection"
         )
-        
         
         self.cfn_collection.add_dependency(opensearch_serverless_encryption_policy)
         self.cfn_collection.add_dependency(opensearch_serverless_network_policy)
@@ -92,7 +87,7 @@ class MyDemoStack(Stack):
             knowledge_base_configuration=bedrock.CfnKnowledgeBase.KnowledgeBaseConfigurationProperty(
                 type="VECTOR",
                 vector_knowledge_base_configuration=bedrock.CfnKnowledgeBase.VectorKnowledgeBaseConfigurationProperty(
-                    embedding_model_arn="arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:0",
+                    embedding_model_arn=EMBEDDING_MODEL_ARN,
 
                     ## the properties below are optional
                     embedding_model_configuration=bedrock.CfnKnowledgeBase.EmbeddingModelConfigurationProperty(
@@ -111,10 +106,10 @@ class MyDemoStack(Stack):
                     field_mapping=bedrock.CfnKnowledgeBase.OpenSearchServerlessFieldMappingProperty(
                         metadata_field="AMAZON_BEDROCK_METADATA",
                         text_field="AMAZON_BEDROCK_TEXT_CHUNK",
-                        # !!
+                        # To Do !!
                         vector_field="bedrock-knowledge-base-default-vector"
                     ),
-                    # !!
+                    # To Do !!
                     vector_index_name="bedrock-knowledgebase-index"
                 )
             )
