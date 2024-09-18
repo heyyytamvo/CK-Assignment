@@ -6,7 +6,7 @@ git clone https://github.com/heyyytamvo/CK-Assignment.git
 
 Set up the Storage for the Model, I will use service from PineCone to avoid charging.
 
-![image](/images/00.png)
+![image](/images/10.png)
 
 # Export Environment Variables
 ```sh
