@@ -59,6 +59,7 @@ class MyDemoStack(Stack):
                 resources=["*"],
             )
         )
+        
         # create knowledge base
         self.kb = bedrock.CfnKnowledgeBase(
             self, 
