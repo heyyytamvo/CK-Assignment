@@ -31,7 +31,7 @@ cdk bootstrap
 
 ## Provision S3 Bucket and Bedrock Role
 
-In file `work/ck_stack.py`, comment lines **63-117**, then:
+In file `work/ck_stack.py`, commenting lines **63-117**, then:
 
 ```sh
 cdk deploy
@@ -42,7 +42,7 @@ Then, we will get the deployment of **S3** and **BedRockRole** as below:
 ![image](/images/01.png)
 
 ## Provision Knowledge Base and Data Source
-Next, uncomment lines **63-117** `work/ck_stack.py`, then executing the command below:
+Next, uncommenting lines **63-117** `work/ck_stack.py`, then executing the command below:
 
 ```sh
 cdk diff
