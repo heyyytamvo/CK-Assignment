@@ -2,6 +2,11 @@
 ```sh
 git clone https://github.com/heyyytamvo/CK-Assignment.git
 ```
+# Set up the Indexes in PineCone 
+
+Set up the Storage for the Model, I will use service from PineCone to avoid charging.
+
+![image](/images/00.png)
 
 # Export Environment Variables
 ```sh
@@ -46,7 +51,7 @@ We will find out 2 resources are ready to be deployed.
 
 ![image](/images/02.png)
 
-Deploy the infrastructure, we will see the successfull result.
+Deploy the infrastructure, we will see the successful result.
 
 ![image](/images/03.png)
 
@@ -58,7 +63,7 @@ and the **Data Source** as Figure below:
 
 ![image](/images/05.png)
 
-We are going to upload the CSV file to the S3 Bucket, which linked to the Data Source that we just created. The file `knownledgebase.csv` will be used for testing purposes.
+We are going to upload the CSV file to the S3 Bucket. The file `knownledgebase.csv` will be used for testing purposes.
 
 ![image](/images/06.png)
 
@@ -66,3 +71,8 @@ Next, sync the **Data Source**
 
 ![image](/images/07.png)
 
+# Test the Model by Q&A
+## Question 1
+![image](/images/08.png)
+## Question 2
+![image](/images/09.png)
