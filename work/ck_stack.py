@@ -87,7 +87,7 @@ class MyDemoStack(Stack):
                 type="PINECONE",
                 
                 pinecone_configuration=bedrock.CfnKnowledgeBase.PineconeConfigurationProperty(
-                    connection_string="https://test-pn0ffam.svc.aped-4627-b74a.pinecone.io",
+                    connection_string=os.getenv('host_domain'),
                     credentials_secret_arn=self.secret.secret_arn,
                     field_mapping=bedrock.CfnKnowledgeBase.PineconeFieldMappingProperty(
                         metadata_field="metadataField",
