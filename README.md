@@ -13,7 +13,7 @@ Set up the Storage for the Model, I will use service from PineCone to avoid char
 export AWS_ACCESS_KEY_ID=<your-access-key> \
 export AWS_SECRET_ACCESS_KEY=<your-secret> \
 export AWS_DEFAULT_REGION=<your-region> \
-export apikey=<your-api-key>
+export apikey=<your-api-key> \
 export host_domain=<your-pinecone-host>
 ```
 
